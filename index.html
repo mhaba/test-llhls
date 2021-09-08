@@ -6,14 +6,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Demo LLHLS Player</title>
 
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        .wrapper {
+            align-content: center;
+            display: grid;
+            grid-auto-flow: column;
+            grid-template-columns: 1fr, 1fr;
+            grid-gap: 10px;
+        }
+    </style>
+
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="parameters.js"></script>
 </head>
 <body>
     <div>
         <h1>LL-HLS Player</h1>
+        <div class=wrapper>
+            <video controls id="video" width="1280" height="720"></video>
+            <iframe src="https://reloj-alarma.es/hora/" width="400" height="300"></iframe>
+        </div>
         
-        <video controls id="video" width="800" height="600"></video>
         <script>
         if (Hls.isSupported()) {
             var hls = new Hls(config);
