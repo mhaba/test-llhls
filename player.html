@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo LLHLS Player</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="parameters.js"></script>
+</head>
+<body>
+    <div>
+        <h1>LL-HLS Player</h1>
+        
+        <video controls id="video" width="800" height="600"></video>
+        <script>
+        if (Hls.isSupported()) {
+            var hls = new Hls(config);
+            var video = document.getElementById('video');
+
+            // bind them together
+            hls.attachMedia(video);
+            // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
+            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+                console.log('video and hls.js are now bound together !');
+                //hls.loadSource('http://158.42.9.223:1935/test-llhls/test/playlist_sfm4s.m3u8');
+                hls.loadSource('https://test.streaming.upv.es/test-llhls/PRUEBAS/playlist_sfm4s.m3u8');
+                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+                    console.log(
+                        'manifest loaded, found ' + data.levels.length + ' quality level'
+                    );
+                    console.log(Hls.Level, data.levels)
+                });
+            });
+        }
+        </script>
+    </div>
+</body>
+</html>
+    
