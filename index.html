@@ -20,6 +20,9 @@
             grid-template-columns: 1fr, 1fr;
             grid-gap: 10px;
         }
+        #iframe-wrp {
+            display: grid;
+        }
     </style>
 
     <link rel="shortcut icon" href="./favicon/logo_asic.jpg">
@@ -34,7 +37,10 @@
         <h1>LL-HLS Player</h1>
         <div class=wrapper>
             <video controls id="video" width="1280" height="720"></video>
-            <!--<iframe src="https://reloj-alarma.es/hora/" width="400" height="300"></iframe>-->
+            <div id="iframe-wrp">
+                <iframe src="https://reloj-alarma.es/hora/" width="400" height="300"></iframe>
+            </div>
+            
         </div>
         
         <script>
@@ -50,10 +56,11 @@
             // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
             player.on(Hls.Events.MEDIA_ATTACHED, function () {
                 console.log('video and hls.js are now bound together !');
-                player.loadSource('https://test.streaming.upv.es/test-bitrate/smil:test-bitrate.smil/playlist.m3u8')
+                player.loadSource('https://test.streaming.upv.es/test-llhls/smil:test-llhls.smil/playlist.m3u8');
 
                 player.startLoad(startPosition=-1);
-                document.body.appendChild(liveEdgeBtn);
+                var iframeWrp = document.getElementById('iframe-wrp');
+                iframeWrp.appendChild(liveEdgeBtn);
                 liveEdgeBtn.onclick = function() {
                     seekLiveEdgeHls(player);
                 }
