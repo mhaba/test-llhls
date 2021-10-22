@@ -22,6 +22,10 @@
         }
     </style>
 
+    <link rel="shortcut icon" href="./favicon/logo_asic.jpg">
+    <link rel="icon" href="./favicon/logo_asic.jpg">
+
+
     <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="parameters.js"></script>
 </head>
@@ -30,28 +34,81 @@
         <h1>LL-HLS Player</h1>
         <div class=wrapper>
             <video controls id="video" width="1280" height="720"></video>
-            <iframe src="https://reloj-alarma.es/hora/" width="400" height="300"></iframe>
+            <!--<iframe src="https://reloj-alarma.es/hora/" width="400" height="300"></iframe>-->
         </div>
         
         <script>
+        var video = document.getElementById('video');
+        var liveEdgeBtn = document.createElement('button');
+        liveEdgeBtn.innerHTML = "Seek Live Edge";
+
         if (Hls.isSupported()) {
-            var hls = new Hls(config);
-            var video = document.getElementById('video');
+            var player = new Hls(config);
 
             // bind them together
-            hls.attachMedia(video);
+            player.attachMedia(video);
             // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
-            hls.on(Hls.Events.MEDIA_ATTACHED, function () {
+            player.on(Hls.Events.MEDIA_ATTACHED, function () {
                 console.log('video and hls.js are now bound together !');
-                //hls.loadSource('http://158.42.9.223:1935/test-llhls/test/playlist_sfm4s.m3u8');
-                hls.loadSource('https://test.streaming.upv.es/test-llhls/PRUEBAS/playlist_sfm4s.m3u8');
-                hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
-                    console.log(
-                        'manifest loaded, found ' + data.levels.length + ' quality level'
-                    );
-                    console.log(Hls.Level, data.levels)
-                });
+                player.loadSource('https://test.streaming.upv.es/test-bitrate/smil:test-bitrate.smil/playlist.m3u8')
+
+                player.startLoad(startPosition=-1);
+                document.body.appendChild(liveEdgeBtn);
+                liveEdgeBtn.onclick = function() {
+                    seekLiveEdgeHls(player);
+                }
+
             });
+            player.on(Hls.Events.ERROR, function(event, data) {
+                if (data.fatal) {
+                    switch (data.type) {
+                    case Hls.ErrorTypes.NETWORK_ERROR:
+                        // try to recover network error
+                        console.log('fatal network error encountered, try to recover');
+                        player.startLoad();
+                        break;
+                    case Hls.ErrorTypes.MEDIA_ERROR:
+                        console.log('fatal media error encountered, try to recover');
+                        player.recoverMediaError();
+                        break;
+                    default:
+                        // cannot recover
+                        player.destroy();
+                        break;
+                    }
+                }
+            });
+        }
+        
+        else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
+            console.log('This is a IOS device')
+
+            //var player = new Hls(config);
+            var source = document.createElement('source');
+            source.setAttribute('src', 'https://test.streaming.upv.es/test-llhls/smil:test-llhls.smil/playlist.m3u8');
+            video.appendChild(source);
+
+
+            //document.body.appendChild(liveEdgeBtn);
+
+            //video.play();
+
+            /*// bind them together
+            player.attachMedia(video);
+            // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
+            player.on(Hls.Events.MEDIA_ATTACHED, function () {
+                console.log('video and hls.js are now bound together !');
+                
+                player.loadSource('https://test.streaming.upv.es/test-llhls/smil:test-llhls.smil/playlist.m3u8');
+            });
+            */
+
+            //document.body.appendChild(liveEdgeBtn);
+            //liveEdgeBtn.onclick = seekLiveEdge(video);
+        };
+
+        function seekLiveEdgeHls(player) {
+            video.currentTime = player.liveSyncPosition
         }
         </script>
     </div>
