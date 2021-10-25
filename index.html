@@ -68,8 +68,6 @@
                     seekLiveEdgeHls(player);
                 }
 
-                player.on(Hls.Events.LEVEL_LOADED)
-
             });
             player.on(Hls.Events.ERROR, function(event, data) {
                 if (data.fatal) {
@@ -93,30 +91,15 @@
         }
         
         else if (/iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream) {
-            console.log('This is a IOS device')
+            console.log('This is a IOS device');
 
-            //var player = new Hls(config);
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+
             var source = document.createElement('source');
             source.setAttribute('src', 'https://test.streaming.upv.es/test-llhls/smil:test-llhls.smil/playlist.m3u8');
             video.appendChild(source);
-
-
-            //document.body.appendChild(liveEdgeBtn);
-
-            //video.play();
-
-            /*// bind them together
-            player.attachMedia(video);
-            // MEDIA_ATTACHED event is fired by hls object once MediaSource is ready
-            player.on(Hls.Events.MEDIA_ATTACHED, function () {
-                console.log('video and hls.js are now bound together !');
-                
-                player.loadSource('https://test.streaming.upv.es/test-llhls/smil:test-llhls.smil/playlist.m3u8');
-            });
-            */
-
-            //document.body.appendChild(liveEdgeBtn);
-            //liveEdgeBtn.onclick = seekLiveEdge(video);
         };
 
         function seekLiveEdgeHls(player) {
