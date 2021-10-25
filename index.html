@@ -36,7 +36,7 @@
     <div>
         <h1>LL-HLS Player</h1>
         <div class=wrapper>
-            <video controls id="video" width="1280" height="720"></video>
+            <video controls id="video" width="1280" height="720", src="https://test.streaming.upv.es/test-llhls/smil:test-llhls.smil/playlist.m3u8"></video>
             <div id="iframe-wrp">
                 <iframe src="https://reloj-alarma.es/hora/" width="400" height="300"></iframe>
             </div>
@@ -50,6 +50,9 @@
 
         if (Hls.isSupported()) {
             var player = new Hls(config);
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
 
             // bind them together
             player.attachMedia(video);
@@ -64,6 +67,8 @@
                 liveEdgeBtn.onclick = function() {
                     seekLiveEdgeHls(player);
                 }
+
+                player.on(Hls.Events.LEVEL_LOADED)
 
             });
             player.on(Hls.Events.ERROR, function(event, data) {
